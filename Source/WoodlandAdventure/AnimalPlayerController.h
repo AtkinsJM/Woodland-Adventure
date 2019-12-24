@@ -14,4 +14,51 @@ class WOODLANDADVENTURE_API AAnimalPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+public:
+	AAnimalPlayerController();
+
+	class UAnimalCharacterInputComponent* AnimalCharacterInputComponent;
+
+	class AAnimalCharacter* AnimalCharacter;
+
+	/** Base rotation rates to scale rotation functions for the camera */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float BaseTurnRate;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float BaseLookUpRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	bool bInvertYAxis;
+	
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	FRotator InitialRotation;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	
+	virtual void SetupInputComponent() override;
+
+	virtual void OnPossess(APawn* Pawn) override;
+
+	virtual void OnUnPossess() override;
+
+public:
+	
+	void HandleMovement();
+	void MoveForward(float Value);
+	void MoveSideways(float Value);
+	
+	void LookUp(float Value);
+	void Turn(float Value);
+
+private:
+	class USpringArmComponent* CameraBoom;
+
+	bool bIsControllingCameraOnly;
+	
+	FVector2D MovementDirection;
 };
