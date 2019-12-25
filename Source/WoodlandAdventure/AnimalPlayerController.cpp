@@ -9,13 +9,15 @@
 
 AAnimalPlayerController::AAnimalPlayerController()
 {
-	BaseTurnRate = 65.0f;
-	BaseLookUpRate = 65.0f;
+	BaseCameraTurnRate = 50.0f;
+	BaseCameraLookUpRate = 50.0f;
 	bIsControllingCameraOnly = false;
 	
 	InitialRotation = FRotator(-20.0f, 0.0f, 0.0f);
 
 	bInvertYAxis = true;
+
+	TurnInterpSpeed = 5.0f;
 }
 
 void AAnimalPlayerController::SetupInputComponent()
@@ -69,10 +71,10 @@ void AAnimalPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	HandleMovement();
+	HandleMovement(DeltaTime);
 }
 
-void AAnimalPlayerController::HandleMovement()
+void AAnimalPlayerController::HandleMovement(float DeltaTime)
 {
 	//Handle movement and rotation
 	if (AnimalCharacter == nullptr || MovementDirection.Size() == 0.0f) { return; }
@@ -88,10 +90,11 @@ void AAnimalPlayerController::HandleMovement()
 	if (MovementDirection.Y < 0.0f) { YawAngle *= -1; }
 	DesiredRotation.Yaw += YawAngle;
 	
-	AnimalCharacter->SetActorRotation(DesiredRotation);
-
+	FRotator NewRotation = FMath::RInterpTo(AnimalCharacter->GetActorRotation(), DesiredRotation, DeltaTime, TurnInterpSpeed);
+	AnimalCharacter->SetActorRotation(NewRotation);
 	const FVector NewForwardDirection = UKismetMathLibrary::GetForwardVector(DesiredRotation);
 	AnimalCharacter->AddMovementInput(NewForwardDirection, MovementDirection.Size());
+	
 }
 
 void AAnimalPlayerController::MoveForward(float Value)
@@ -107,14 +110,14 @@ void AAnimalPlayerController::MoveSideways(float Value)
 void AAnimalPlayerController::Turn(float Value)
 {
 	if (Value == 0.0f) { return; }
-	ControlRotation.Yaw += Value * BaseTurnRate * GetWorld()->GetDeltaSeconds();
+	ControlRotation.Yaw += Value * BaseCameraTurnRate * GetWorld()->GetDeltaSeconds();
 }
 
 void AAnimalPlayerController::LookUp(float Value)
 {
 	if (Value == 0.0f) { return; }
 	if (bInvertYAxis) { Value *= -1; }
-	ControlRotation.Pitch += Value * BaseLookUpRate * GetWorld()->GetDeltaSeconds();
+	ControlRotation.Pitch += Value * BaseCameraLookUpRate * GetWorld()->GetDeltaSeconds();
 	FRotator WantedRotation = ControlRotation;
 	if (WantedRotation.Pitch > 180.0f) { WantedRotation.Pitch -= 360.0f; }
 	WantedRotation.Pitch = FMath::Clamp(WantedRotation.Pitch, -60.0f, 0.0f);

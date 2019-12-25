@@ -23,15 +23,18 @@ public:
 
 	/** Base rotation rates to scale rotation functions for the camera */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
-	float BaseTurnRate;
+	float BaseCameraTurnRate;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
-	float BaseLookUpRate;
+	float BaseCameraLookUpRate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	bool bInvertYAxis;
-	
+		
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	FRotator InitialRotation;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+	float TurnInterpSpeed;
 
 protected:
 	// Called when the game starts or when spawned
@@ -48,7 +51,7 @@ protected:
 
 public:
 	
-	void HandleMovement();
+	void HandleMovement(float DeltaTime);
 	void MoveForward(float Value);
 	void MoveSideways(float Value);
 	

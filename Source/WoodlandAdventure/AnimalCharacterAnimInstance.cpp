@@ -25,7 +25,6 @@ void UAnimalCharacterAnimInstance::UpdateAnimationProperties()
 		FVector Speed = Pawn->GetVelocity();
 		FVector LateralSpeed = FVector(Speed.X, Speed.Y, 0.0f);
 		ForwardSpeed = LateralSpeed.Size();
-		UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), ForwardSpeed);
 		YawDelta = Pawn->GetActorRotation().Yaw - LastYaw;
 		if (YawDelta > 180.0f) { YawDelta -= 360.0f; }
 		if (YawDelta < -180.0f) { YawDelta += 360.0f; }
