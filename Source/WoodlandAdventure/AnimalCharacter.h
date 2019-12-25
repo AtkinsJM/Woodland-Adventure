@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	float DefaultCameraBoomLength;
 
+	UPROPERTY(EditAnywhere, Category = "Actions")
+	float SleepLength;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,11 +43,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsSleeping() { return bIsSleeping; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetCanMove(bool Value) { bCanMove = Value; }
+
+	UFUNCTION(BlueprintCallable)
+	bool CanMove() { return bCanMove; }
+
 	void StartSleep();
 
 	void EndSleep();
 
 private:
 	bool bIsSleeping;
+	bool bCanMove;
 	FTimerHandle SleepTimerHandle;
 };

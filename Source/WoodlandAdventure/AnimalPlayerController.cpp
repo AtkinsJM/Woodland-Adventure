@@ -80,6 +80,7 @@ void AAnimalPlayerController::HandleMovement(float DeltaTime)
 {
 	//Handle movement and rotation
 	if (AnimalCharacter == nullptr || MovementDirection.Size() == 0.0f) { return; }
+	if (!AnimalCharacter->CanMove()) { return; }
 
 	// Start with initial rotation that turning is relative to
 	FRotator DesiredRotation = AnimalCharacter->GetActorRotation();

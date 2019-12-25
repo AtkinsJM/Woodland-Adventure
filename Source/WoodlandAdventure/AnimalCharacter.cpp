@@ -29,6 +29,9 @@ AAnimalCharacter::AAnimalCharacter()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	bIsSleeping = false;
+	bCanMove = true;
+
+	SleepLength = 5.0f;
 }
 
 // Called when the game starts or when spawned
@@ -56,7 +59,7 @@ void AAnimalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void AAnimalCharacter::StartSleep()
 {
 	bIsSleeping = true;
-	GetWorld()->GetTimerManager().SetTimer(SleepTimerHandle, this, &AAnimalCharacter::EndSleep, 5.0f, true);
+	GetWorld()->GetTimerManager().SetTimer(SleepTimerHandle, this, &AAnimalCharacter::EndSleep, SleepLength, true);
 }
 
 void AAnimalCharacter::EndSleep()
