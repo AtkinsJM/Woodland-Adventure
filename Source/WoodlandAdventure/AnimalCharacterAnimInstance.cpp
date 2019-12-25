@@ -19,17 +19,20 @@ void UAnimalCharacterAnimInstance::NativeInitializeAnimation()
 
 void UAnimalCharacterAnimInstance::UpdateAnimationProperties()
 {
-	if (Pawn)
-	{
-		if (LastYaw == 0.0f) { LastYaw = Pawn->GetActorRotation().Yaw; }
-		FVector Speed = Pawn->GetVelocity();
-		FVector LateralSpeed = FVector(Speed.X, Speed.Y, 0.0f);
-		ForwardSpeed = LateralSpeed.Size();
-		YawDelta = Pawn->GetActorRotation().Yaw - LastYaw;
-		if (YawDelta > 180.0f) { YawDelta -= 360.0f; }
-		if (YawDelta < -180.0f) { YawDelta += 360.0f; }
-		LastYaw = Pawn->GetActorRotation().Yaw;
+	if (!Pawn) { return; }
+	if (LastYaw == 0.0f) { LastYaw = Pawn->GetActorRotation().Yaw; }
+	FVector Speed = Pawn->GetVelocity();
+	FVector LateralSpeed = FVector(Speed.X, Speed.Y, 0.0f);
+	ForwardSpeed = LateralSpeed.Size();
+	YawDelta = Pawn->GetActorRotation().Yaw - LastYaw;
+	if (YawDelta > 180.0f) { YawDelta -= 360.0f; }
+	if (YawDelta < -180.0f) { YawDelta += 360.0f; }
+	LastYaw = Pawn->GetActorRotation().Yaw;
 		
-		bIsInAir = Pawn->GetMovementComponent()->IsFalling();
+	bIsInAir = Pawn->GetMovementComponent()->IsFalling();
+
+	if (AnimalCharacter)
+	{
+		bIsSleeping = AnimalCharacter->IsSleeping();
 	}
 }

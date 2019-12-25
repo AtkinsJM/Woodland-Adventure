@@ -39,6 +39,8 @@ void AAnimalPlayerController::SetupInputComponent()
 	AnimalCharacterInputComponent->BindAxis(TEXT("SidewaysMovement"), this, &AAnimalPlayerController::MoveSideways);
 	AnimalCharacterInputComponent->BindAxis(TEXT("CameraLookUp"), this, &AAnimalPlayerController::LookUp);
 	AnimalCharacterInputComponent->BindAxis(TEXT("CameraTurn"), this, &AAnimalPlayerController::Turn);
+
+	AnimalCharacterInputComponent->BindAction(TEXT("Sleep"), IE_Pressed, this, &AAnimalPlayerController::Sleep);
 }
 
 void AAnimalPlayerController::OnPossess(APawn * Pawn)
@@ -111,6 +113,12 @@ void AAnimalPlayerController::Turn(float Value)
 {
 	if (Value == 0.0f) { return; }
 	ControlRotation.Yaw += Value * BaseCameraTurnRate * GetWorld()->GetDeltaSeconds();
+}
+
+void AAnimalPlayerController::Sleep()
+{
+	if (!AnimalCharacter) { return; }
+	AnimalCharacter->StartSleep();
 }
 
 void AAnimalPlayerController::LookUp(float Value)

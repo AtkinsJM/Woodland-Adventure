@@ -4,6 +4,7 @@
 #include "AnimalCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Engine/World.h"
 
 // Sets default values
 AAnimalCharacter::AAnimalCharacter()
@@ -26,6 +27,8 @@ AAnimalCharacter::AAnimalCharacter()
 	// Attach camera to end of boom and let boom control its rotation
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	bIsSleeping = false;
 }
 
 // Called when the game starts or when spawned
@@ -48,5 +51,16 @@ void AAnimalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AAnimalCharacter::StartSleep()
+{
+	bIsSleeping = true;
+	GetWorld()->GetTimerManager().SetTimer(SleepTimerHandle, this, &AAnimalCharacter::EndSleep, 5.0f, true);
+}
+
+void AAnimalCharacter::EndSleep()
+{
+	bIsSleeping = false;
 }
 

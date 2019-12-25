@@ -58,6 +58,8 @@ public:
 	void LookUp(float Value);
 	void Turn(float Value);
 
+	void Sleep();
+
 private:
 	class USpringArmComponent* CameraBoom;
 

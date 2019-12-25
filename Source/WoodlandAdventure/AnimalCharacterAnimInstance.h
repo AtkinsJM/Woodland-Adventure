@@ -29,6 +29,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	bool bIsInAir;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
+	bool bIsSleeping;
+
 protected:
 	virtual void NativeInitializeAnimation() override;
 
