@@ -6,6 +6,7 @@
 #include "AnimalCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Blueprint/UserWidget.h"
 
 AAnimalPlayerController::AAnimalPlayerController()
 {
@@ -66,6 +67,13 @@ void AAnimalPlayerController::BeginPlay()
 	{
 		CameraBoom = AnimalCharacter->CameraBoom;
 		//AnimalCharacter->GetCharacterMovement()->AirControl = AirControl;
+	}
+
+	if (HUDOverlayAsset != nullptr)
+	{
+		HUDOverlay = CreateWidget<UUserWidget>(this, HUDOverlayAsset);
+		HUDOverlay->AddToViewport();
+		HUDOverlay->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

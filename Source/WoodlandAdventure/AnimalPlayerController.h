@@ -21,6 +21,12 @@ public:
 
 	class AAnimalCharacter* AnimalCharacter;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<class UUserWidget> HUDOverlayAsset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	UUserWidget* HUDOverlay;
+
 	/** Base rotation rates to scale rotation functions for the camera */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	float BaseCameraTurnRate;
