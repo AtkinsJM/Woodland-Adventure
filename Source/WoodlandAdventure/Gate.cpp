@@ -31,6 +31,12 @@ void AGate::BeginPlay()
 void AGate::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	HandleRotation(DeltaTime);
+}
+
+void AGate::HandleRotation(float DeltaTime)
+{
 	FRotator CurrentRotation = GetActorRotation();
 	FRotator DesiredRotation = CurrentRotation;
 	DesiredRotation.Yaw = bIsClosed ? ClosedYaw : OpenYaw;
@@ -45,7 +51,6 @@ void AGate::Interact()
 {
 	Super::Interact();
 	bIsClosed = !bIsClosed;
-	UE_LOG(LogTemp, Warning, TEXT("Interacting with gate!"));
 }
 
 void AGate::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
