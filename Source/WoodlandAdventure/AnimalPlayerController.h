@@ -38,7 +38,7 @@ public:
 		
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	FRotator InitialRotation;
-	
+		
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
 	float TurnInterpSpeed;
 
@@ -63,6 +63,8 @@ public:
 	
 	void LookUp(float Value);
 	void Turn(float Value);
+
+	void ZoomCamera(float Value);
 
 	void Sleep();
 

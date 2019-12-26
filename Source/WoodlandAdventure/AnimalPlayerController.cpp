@@ -17,7 +17,7 @@ AAnimalPlayerController::AAnimalPlayerController()
 	InitialRotation = FRotator(-20.0f, 0.0f, 0.0f);
 
 	bInvertYAxis = true;
-
+	
 	TurnInterpSpeed = 5.0f;
 }
 
@@ -40,6 +40,7 @@ void AAnimalPlayerController::SetupInputComponent()
 	AnimalCharacterInputComponent->BindAxis(TEXT("SidewaysMovement"), this, &AAnimalPlayerController::MoveSideways);
 	AnimalCharacterInputComponent->BindAxis(TEXT("CameraLookUp"), this, &AAnimalPlayerController::LookUp);
 	AnimalCharacterInputComponent->BindAxis(TEXT("CameraTurn"), this, &AAnimalPlayerController::Turn);
+	AnimalCharacterInputComponent->BindAxis(TEXT("CameraZoom"), this, &AAnimalPlayerController::ZoomCamera);
 
 	AnimalCharacterInputComponent->BindAction(TEXT("Sleep"), IE_Pressed, this, &AAnimalPlayerController::Sleep);
 	AnimalCharacterInputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &AAnimalPlayerController::Interact);
@@ -123,6 +124,12 @@ void AAnimalPlayerController::Turn(float Value)
 {
 	if (Value == 0.0f) { return; }
 	ControlRotation.Yaw += Value * BaseCameraTurnRate * GetWorld()->GetDeltaSeconds();
+}
+
+void AAnimalPlayerController::ZoomCamera(float Value)
+{
+	if (!AnimalCharacter) { return; }
+	AnimalCharacter->ZoomCamera(Value);
 }
 
 void AAnimalPlayerController::Sleep()

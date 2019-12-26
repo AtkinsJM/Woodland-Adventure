@@ -29,6 +29,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	float DefaultCameraBoomLength;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float MaxZoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float MinZoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float ZoomRate;
+
 	UPROPERTY(EditAnywhere, Category = "Actions")
 	float SleepLength;
 
@@ -57,6 +66,8 @@ public:
 	void EndSleep();
 
 	void Interact();
+
+	void ZoomCamera(float Value);
 
 	FORCEINLINE void SetInteractingActor(class AInteractable* Actor) { InteractingActor = Actor; }
 

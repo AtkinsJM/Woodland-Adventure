@@ -22,6 +22,10 @@ AAnimalCharacter::AAnimalCharacter()
 	
 	DefaultCameraBoomLength = 300.0f;
 
+	MaxZoom = 2.0f;
+	MinZoom = 0.5f;
+	ZoomRate = 5.0f;
+
 	// Create Camera Boom
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
@@ -56,7 +60,6 @@ void AAnimalCharacter::BeginPlay()
 void AAnimalCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -83,6 +86,11 @@ void AAnimalCharacter::Interact()
 	{
 		InteractingActor->Interact();
 	}
+}
+
+void AAnimalCharacter::ZoomCamera(float Value)
+{
+	CameraBoom->TargetArmLength = FMath::Clamp(CameraBoom->TargetArmLength += (ZoomRate * Value), DefaultCameraBoomLength * MinZoom, DefaultCameraBoomLength * MaxZoom);
 }
 
 void AAnimalCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
