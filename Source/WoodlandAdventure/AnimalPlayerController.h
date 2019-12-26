@@ -66,6 +66,8 @@ public:
 
 	void Sleep();
 
+	void Interact();
+
 private:
 	class USpringArmComponent* CameraBoom;
 

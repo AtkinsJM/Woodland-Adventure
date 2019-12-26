@@ -5,6 +5,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/World.h"
+#include "Components/SphereComponent.h"
+#include "Interactable.h"
 
 // Sets default values
 AAnimalCharacter::AAnimalCharacter()
@@ -12,6 +14,12 @@ AAnimalCharacter::AAnimalCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	InteractionVolume = CreateDefaultSubobject<USphereComponent>(TEXT("Interaction Volume"));
+	InteractionVolume->SetupAttachment(GetRootComponent());
+
+	InteractionVolume->OnComponentBeginOverlap.AddDynamic(this, &AAnimalCharacter::OnBeginOverlap);
+	InteractionVolume->OnComponentEndOverlap.AddDynamic(this, &AAnimalCharacter::OnEndOverlap);
+	
 	DefaultCameraBoomLength = 300.0f;
 
 	// Create Camera Boom
@@ -32,6 +40,8 @@ AAnimalCharacter::AAnimalCharacter()
 	bCanMove = true;
 
 	SleepLength = 5.0f;
+
+	InteractingActor = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -65,5 +75,37 @@ void AAnimalCharacter::StartSleep()
 void AAnimalCharacter::EndSleep()
 {
 	bIsSleeping = false;
+}
+
+void AAnimalCharacter::Interact()
+{
+	if (InteractingActor)
+	{
+		InteractingActor->Interact();
+	}
+}
+
+void AAnimalCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	if (OtherActor)
+	{
+		AInteractable* Interactable = Cast<AInteractable>(OtherActor);
+		if (Interactable && !InteractingActor)
+		{
+			InteractingActor = Interactable;
+		}
+	}
+}
+
+void AAnimalCharacter::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor)
+	{
+		AInteractable* Interactable = Cast<AInteractable>(OtherActor);
+		if (Interactable && Interactable == InteractingActor)
+		{
+			InteractingActor = nullptr;
+		}
+	}
 }
 

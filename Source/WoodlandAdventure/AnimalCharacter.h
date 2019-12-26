@@ -15,6 +15,9 @@ public:
 	// Sets default values for this character's properties
 	AAnimalCharacter();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	class USphereComponent* InteractionVolume;
+
 	/** Camera boom positioning the camera behind the player */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
@@ -53,8 +56,19 @@ public:
 
 	void EndSleep();
 
+	void Interact();
+
+	FORCEINLINE void SetInteractingActor(class AInteractable* Actor) { InteractingActor = Actor; }
+
+	UFUNCTION()
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	UFUNCTION()
+	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 private:
 	bool bIsSleeping;
 	bool bCanMove;
 	FTimerHandle SleepTimerHandle;
+
+	class AInteractable* InteractingActor;
 };

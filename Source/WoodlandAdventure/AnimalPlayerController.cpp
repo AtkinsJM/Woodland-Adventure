@@ -42,6 +42,7 @@ void AAnimalPlayerController::SetupInputComponent()
 	AnimalCharacterInputComponent->BindAxis(TEXT("CameraTurn"), this, &AAnimalPlayerController::Turn);
 
 	AnimalCharacterInputComponent->BindAction(TEXT("Sleep"), IE_Pressed, this, &AAnimalPlayerController::Sleep);
+	AnimalCharacterInputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &AAnimalPlayerController::Interact);
 }
 
 void AAnimalPlayerController::OnPossess(APawn * Pawn)
@@ -128,6 +129,12 @@ void AAnimalPlayerController::Sleep()
 {
 	if (!AnimalCharacter) { return; }
 	AnimalCharacter->StartSleep();
+}
+
+void AAnimalPlayerController::Interact()
+{
+	if (!AnimalCharacter) { return; }
+	AnimalCharacter->Interact();
 }
 
 void AAnimalPlayerController::LookUp(float Value)
