@@ -4,7 +4,6 @@
 #include "AnimalPlayerController.h"
 #include "AnimalCharacterInputComponent.h"
 #include "AnimalCharacter.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Blueprint/UserWidget.h"
 
@@ -49,6 +48,14 @@ void AAnimalPlayerController::SetupInputComponent()
 void AAnimalPlayerController::OnPossess(APawn * Pawn)
 {
 	Super::OnPossess(Pawn);
+	
+	AnimalCharacter = Cast<AAnimalCharacter>(Pawn);
+	ControlRotation += InitialRotation;
+
+	if (AnimalCharacter)
+	{
+		//AnimalCharacter->GetCharacterMovement()->AirControl = AirControl;
+	}
 
 }
 
@@ -63,13 +70,6 @@ void AAnimalPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	ControlRotation += InitialRotation;
-	AnimalCharacter = Cast<AAnimalCharacter>(GetPawn());
-
-	if (AnimalCharacter)
-	{
-		CameraBoom = AnimalCharacter->CameraBoom;
-		//AnimalCharacter->GetCharacterMovement()->AirControl = AirControl;
-	}
 
 	if (HUDOverlayAsset != nullptr)
 	{

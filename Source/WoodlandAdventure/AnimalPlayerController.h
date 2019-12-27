@@ -71,8 +71,6 @@ public:
 	void Interact();
 
 private:
-	class USpringArmComponent* CameraBoom;
-
 	bool bIsControllingCameraOnly;
 	
 	FVector2D MovementDirection;
