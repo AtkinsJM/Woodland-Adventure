@@ -5,7 +5,10 @@
 #include "AnimalCharacterInputComponent.h"
 #include "AnimalCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
+
+#define OUT
 
 AAnimalPlayerController::AAnimalPlayerController()
 {
@@ -18,6 +21,8 @@ AAnimalPlayerController::AAnimalPlayerController()
 	bInvertYAxis = true;
 	
 	TurnInterpSpeed = 5.0f;
+
+	PossessedCharacterIndex = -1;
 }
 
 void AAnimalPlayerController::SetupInputComponent()
@@ -43,6 +48,10 @@ void AAnimalPlayerController::SetupInputComponent()
 
 	AnimalCharacterInputComponent->BindAction(TEXT("Sleep"), IE_Pressed, this, &AAnimalPlayerController::Sleep);
 	AnimalCharacterInputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &AAnimalPlayerController::Interact);
+
+	AnimalCharacterInputComponent->BindActionWithParam(FName("NextCharacter"), EInputEvent::IE_Pressed, this, FName("SwitchCharacter"), 1);
+	AnimalCharacterInputComponent->BindActionWithParam(FName("PreviousCharacter"), EInputEvent::IE_Pressed, this, FName("SwitchCharacter"), -1);
+
 }
 
 void AAnimalPlayerController::OnPossess(APawn * Pawn)
@@ -70,6 +79,15 @@ void AAnimalPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	ControlRotation += InitialRotation;
+
+	// Finds all playable (animal) characters in the world and places them in an array for swapping character.
+	FindPlayableCharacters();
+
+	AAnimalCharacter* CurrentCharacter = Cast<AAnimalCharacter>(GetPawn());
+	if (CurrentCharacter)
+	{
+		PlayableCharacters.Find(CurrentCharacter, OUT PossessedCharacterIndex);
+	}
 
 	if (HUDOverlayAsset != nullptr)
 	{
@@ -153,4 +171,31 @@ void AAnimalPlayerController::LookUp(float Value)
 	if (WantedRotation.Pitch > 180.0f) { WantedRotation.Pitch -= 360.0f; }
 	WantedRotation.Pitch = FMath::Clamp(WantedRotation.Pitch, -60.0f, 0.0f);
 	ControlRotation = WantedRotation;
+}
+
+void AAnimalPlayerController::FindPlayableCharacters()
+{
+	for (int i = 0; i < CharacterClasses.Num(); i++)
+	{
+		TArray<AActor*> AnimalCharacters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), CharacterClasses[i], OUT AnimalCharacters);
+		if (AnimalCharacters.Num() > 0)
+		{
+			AAnimalCharacter* AnimalCharacter = Cast<AAnimalCharacter>(AnimalCharacters[0]);
+			if (AnimalCharacter)
+			{
+				PlayableCharacters.Emplace(AnimalCharacter);
+			}	
+		}
+	}
+}
+
+void AAnimalPlayerController::SwitchCharacter(int32 Value)
+{
+	PossessedCharacterIndex = (PossessedCharacterIndex += Value + PlayableCharacters.Num()) % PlayableCharacters.Num();
+	AAnimalCharacter* CharacterToPossess = PlayableCharacters[PossessedCharacterIndex];
+	if (CharacterToPossess)
+	{
+		Possess(CharacterToPossess);
+	}
 }

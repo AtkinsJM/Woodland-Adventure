@@ -21,6 +21,11 @@ public:
 
 	class AAnimalCharacter* AnimalCharacter;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
+	TArray<TSubclassOf<AAnimalCharacter>> CharacterClasses;
+
+	TArray<AAnimalCharacter*> PlayableCharacters;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TSubclassOf<class UUserWidget> HUDOverlayAsset;
 
@@ -70,8 +75,15 @@ public:
 
 	void Interact();
 
+	void FindPlayableCharacters();
+
+	UFUNCTION()
+	void SwitchCharacter(int32 Value);
+
 private:
 	bool bIsControllingCameraOnly;
 	
 	FVector2D MovementDirection;
+
+	int PossessedCharacterIndex;
 };
