@@ -16,7 +16,7 @@ AAnimalPlayerController::AAnimalPlayerController()
 	BaseCameraLookUpRate = 50.0f;
 	bIsControllingCameraOnly = false;
 	
-	InitialRotation = FRotator(-20.0f, 0.0f, 0.0f);
+	InitialRotation = FRotator(-30.0f, 0.0f, 0.0f);
 
 	bInvertYAxis = true;
 	
@@ -48,9 +48,10 @@ void AAnimalPlayerController::SetupInputComponent()
 
 	AnimalCharacterInputComponent->BindAction(TEXT("Sleep"), IE_Pressed, this, &AAnimalPlayerController::Sleep);
 	AnimalCharacterInputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &AAnimalPlayerController::Interact);
+	AnimalCharacterInputComponent->BindAction(TEXT("SwitchCharacter"), IE_Pressed, this, &AAnimalPlayerController::SwitchCharacter);
 
-	AnimalCharacterInputComponent->BindActionWithParam(FName("NextCharacter"), EInputEvent::IE_Pressed, this, FName("SwitchCharacter"), 1);
-	AnimalCharacterInputComponent->BindActionWithParam(FName("PreviousCharacter"), EInputEvent::IE_Pressed, this, FName("SwitchCharacter"), -1);
+	AnimalCharacterInputComponent->BindActionWithParam(FName("NextCharacter"), EInputEvent::IE_Pressed, this, FName("CycleThroughCharacters"), 1);
+	AnimalCharacterInputComponent->BindActionWithParam(FName("PreviousCharacter"), EInputEvent::IE_Pressed, this, FName("CycleThroughCharacters"), -1);
 
 }
 
@@ -190,11 +191,27 @@ void AAnimalPlayerController::FindPlayableCharacters()
 	}
 }
 
-void AAnimalPlayerController::SwitchCharacter(int32 Value)
+void AAnimalPlayerController::CycleThroughCharacters(int32 Value)
 {
 	PossessedCharacterIndex = (PossessedCharacterIndex += Value + PlayableCharacters.Num()) % PlayableCharacters.Num();
+	PossessCharacter();
+}
+
+void AAnimalPlayerController::SwitchCharacter()
+{
+	if (!AnimalCharacter) { return; }
+	AAnimalCharacter* PossessableCharacter = AnimalCharacter->GetPossessableCharacter();
+	if (PossessableCharacter)
+	{
+		PlayableCharacters.Find(PossessableCharacter, OUT PossessedCharacterIndex);
+		PossessCharacter();
+	}
+}
+
+void AAnimalPlayerController::PossessCharacter()
+{
 	AAnimalCharacter* CharacterToPossess = PlayableCharacters[PossessedCharacterIndex];
-	if (CharacterToPossess)
+	if (CharacterToPossess && CharacterToPossess != AnimalCharacter)
 	{
 		Possess(CharacterToPossess);
 	}

@@ -69,7 +69,9 @@ public:
 
 	void ZoomCamera(float Value);
 
-	FORCEINLINE void SetInteractingActor(class AInteractable* Actor) { InteractingActor = Actor; }
+	FORCEINLINE void SetInteractableActor(class AInteractable* Actor) { InteractableActor = Actor; }
+
+	FORCEINLINE AAnimalCharacter* GetPossessableCharacter() { return PossessableCharacter; }
 
 	UFUNCTION()
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
@@ -81,5 +83,7 @@ private:
 	bool bCanMove;
 	FTimerHandle SleepTimerHandle;
 
-	class AInteractable* InteractingActor;
+	class AInteractable* InteractableActor;
+
+	class AAnimalCharacter* PossessableCharacter;
 };

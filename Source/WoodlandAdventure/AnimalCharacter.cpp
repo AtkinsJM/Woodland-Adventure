@@ -31,8 +31,9 @@ AAnimalCharacter::AAnimalCharacter()
 	CameraBoom->SetupAttachment(GetRootComponent());
 	CameraBoom->bUsePawnControlRotation = true;
 
-	CameraBoom->bEnableCameraLag = true;
-	CameraBoom->bEnableCameraRotationLag = true;
+	// Disabled because camera lag was annoying when possessing characters
+	//CameraBoom->bEnableCameraLag = true;
+	//CameraBoom->bEnableCameraRotationLag = true;
 
 	// Create Follow Camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Follow Camera"));
@@ -45,7 +46,8 @@ AAnimalCharacter::AAnimalCharacter()
 
 	SleepLength = 5.0f;
 
-	InteractingActor = nullptr;
+	InteractableActor = nullptr;
+	PossessableCharacter = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -71,6 +73,7 @@ void AAnimalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AAnimalCharacter::StartSleep()
 {
+	if (!bCanMove || bIsSleeping) { return; }
 	bIsSleeping = true;
 	GetWorld()->GetTimerManager().SetTimer(SleepTimerHandle, this, &AAnimalCharacter::EndSleep, SleepLength, true);
 }
@@ -82,9 +85,9 @@ void AAnimalCharacter::EndSleep()
 
 void AAnimalCharacter::Interact()
 {
-	if (InteractingActor)
+	if (InteractableActor)
 	{
-		InteractingActor->Interact();
+		InteractableActor->Interact();
 	}
 }
 
@@ -95,24 +98,36 @@ void AAnimalCharacter::ZoomCamera(float Value)
 
 void AAnimalCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	if (OtherActor)
+	if (OtherActor && OtherActor != this)
 	{
 		AInteractable* Interactable = Cast<AInteractable>(OtherActor);
-		if (Interactable && !InteractingActor)
+		if (Interactable && !InteractableActor)
 		{
-			InteractingActor = Interactable;
+			InteractableActor = Interactable;
+		}
+		AAnimalCharacter* Possessable = Cast<AAnimalCharacter>(OtherActor);
+		if (Possessable && !PossessableCharacter)
+		{
+			PossessableCharacter = Possessable;
+			UE_LOG(LogTemp, Warning, TEXT("Found possessable character: %s"), *Possessable->GetName());
 		}
 	}
 }
 
 void AAnimalCharacter::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor)
+	if (OtherActor && OtherActor != this)
 	{
 		AInteractable* Interactable = Cast<AInteractable>(OtherActor);
-		if (Interactable && Interactable == InteractingActor)
+		if (Interactable && Interactable == InteractableActor)
 		{
-			InteractingActor = nullptr;
+			InteractableActor = nullptr;
+		}
+		AAnimalCharacter* Possessable = Cast<AAnimalCharacter>(OtherActor);
+		if (Possessable && Possessable == PossessableCharacter)
+		{
+			PossessableCharacter = nullptr;
+			UE_LOG(LogTemp, Warning, TEXT("Lost possessable character: "));
 		}
 	}
 }

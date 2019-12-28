@@ -75,10 +75,14 @@ public:
 
 	void Interact();
 
+	void PossessCharacter();
+
 	void FindPlayableCharacters();
 
 	UFUNCTION()
-	void SwitchCharacter(int32 Value);
+	void CycleThroughCharacters(int32 Value);
+	
+	void SwitchCharacter();
 
 private:
 	bool bIsControllingCameraOnly;
