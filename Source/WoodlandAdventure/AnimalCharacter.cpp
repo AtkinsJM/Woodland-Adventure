@@ -104,12 +104,13 @@ void AAnimalCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent,
 		if (Interactable && !InteractableActor)
 		{
 			InteractableActor = Interactable;
+			return;
 		}
 		AAnimalCharacter* Possessable = Cast<AAnimalCharacter>(OtherActor);
 		if (Possessable && !PossessableCharacter)
 		{
 			PossessableCharacter = Possessable;
-			UE_LOG(LogTemp, Warning, TEXT("Found possessable character: %s"), *Possessable->GetName());
+			return;
 		}
 	}
 }
@@ -122,12 +123,13 @@ void AAnimalCharacter::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, A
 		if (Interactable && Interactable == InteractableActor)
 		{
 			InteractableActor = nullptr;
+			return;
 		}
 		AAnimalCharacter* Possessable = Cast<AAnimalCharacter>(OtherActor);
 		if (Possessable && Possessable == PossessableCharacter)
 		{
 			PossessableCharacter = nullptr;
-			UE_LOG(LogTemp, Warning, TEXT("Lost possessable character: "));
+			return;
 		}
 	}
 }

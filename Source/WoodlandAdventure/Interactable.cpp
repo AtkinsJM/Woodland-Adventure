@@ -25,6 +25,8 @@ AInteractable::AInteractable()
 	InteractionRadius = 100.0f;
 
 	bPlaySoundOnInteraction = true;
+
+	InteractionPrompt = "Interact";
 }
 
 // Called when the game starts or when spawned

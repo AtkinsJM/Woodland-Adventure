@@ -71,6 +71,10 @@ public:
 
 	FORCEINLINE void SetInteractableActor(class AInteractable* Actor) { InteractableActor = Actor; }
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE AInteractable* GetInteractableActor() { return InteractableActor; }
+
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AAnimalCharacter* GetPossessableCharacter() { return PossessableCharacter; }
 
 	UFUNCTION()
