@@ -24,6 +24,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	float InteractionRadius;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+	class USoundCue* InteractionSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+	bool bPlaySoundOnInteraction;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

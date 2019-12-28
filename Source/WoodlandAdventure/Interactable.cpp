@@ -4,6 +4,8 @@
 #include "Interactable.h"
 #include "Components/SceneComponent.h"
 #include "Components/SphereComponent.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AInteractable::AInteractable()
@@ -21,6 +23,8 @@ AInteractable::AInteractable()
 	InteractionSphere->OnComponentEndOverlap.AddDynamic(this, &AInteractable::OnEndOverlap);
 
 	InteractionRadius = 100.0f;
+
+	bPlaySoundOnInteraction = true;
 }
 
 // Called when the game starts or when spawned
@@ -41,6 +45,10 @@ void AInteractable::Tick(float DeltaTime)
 
 void AInteractable::Interact()
 {
+	if (InteractionSound && bPlaySoundOnInteraction)
+	{
+		UGameplayStatics::PlaySound2D(this, InteractionSound);
+	}
 }
 
 void AInteractable::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
