@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #define OUT
 
@@ -72,7 +73,11 @@ void AAnimalPlayerController::OnPossess(APawn * Pawn)
 void AAnimalPlayerController::OnUnPossess()
 {
 	Super::OnUnPossess();
-	AnimalCharacter = nullptr;
+	if (AnimalCharacter)
+	{
+		AnimalCharacter->GetCharacterMovement()->StopMovementImmediately();
+		AnimalCharacter = nullptr;
+	}
 }
 
 void AAnimalPlayerController::BeginPlay()
