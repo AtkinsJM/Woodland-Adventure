@@ -76,6 +76,7 @@ void AAnimalPlayerController::OnUnPossess()
 	if (AnimalCharacter)
 	{
 		AnimalCharacter->GetCharacterMovement()->StopMovementImmediately();
+
 		AnimalCharacter = nullptr;
 	}
 }
