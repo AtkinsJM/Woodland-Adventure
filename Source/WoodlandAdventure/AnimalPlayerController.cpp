@@ -23,7 +23,7 @@ AAnimalPlayerController::AAnimalPlayerController()
 	
 	TurnInterpSpeed = 5.0f;
 
-	PossessedCharacterIndex = -1;
+	PossessedCharacterIndex = 0;
 }
 
 void AAnimalPlayerController::SetupInputComponent()
@@ -65,6 +65,10 @@ void AAnimalPlayerController::OnPossess(APawn * Pawn)
 
 	if (AnimalCharacter)
 	{
+		if (!PlayableCharacters.Contains(AnimalCharacter))
+		{
+			PlayableCharacters.Emplace(AnimalCharacter);
+		}
 		//AnimalCharacter->GetCharacterMovement()->AirControl = AirControl;
 	}
 
@@ -88,14 +92,15 @@ void AAnimalPlayerController::BeginPlay()
 	ControlRotation += InitialRotation;
 
 	// Finds all playable (animal) characters in the world and places them in an array for swapping character.
-	FindPlayableCharacters();
-
+	//FindPlayableCharacters();
+	/*
 	AAnimalCharacter* CurrentCharacter = Cast<AAnimalCharacter>(GetPawn());
 	if (CurrentCharacter)
 	{
 		PlayableCharacters.Find(CurrentCharacter, OUT PossessedCharacterIndex);
 	}
-
+	*/
+	   
 	if (HUDOverlayAsset != nullptr)
 	{
 		HUDOverlay = CreateWidget<UUserWidget>(this, HUDOverlayAsset);
@@ -209,7 +214,15 @@ void AAnimalPlayerController::SwitchCharacter()
 	AAnimalCharacter* PossessableCharacter = AnimalCharacter->GetPossessableCharacter();
 	if (PossessableCharacter)
 	{
-		PlayableCharacters.Find(PossessableCharacter, OUT PossessedCharacterIndex);
+		if (!PlayableCharacters.Contains(PossessableCharacter))
+		{
+			PlayableCharacters.Emplace(PossessableCharacter);
+			PossessedCharacterIndex = PlayableCharacters.Num() - 1;
+		}
+		else
+		{
+			PlayableCharacters.Find(PossessableCharacter, OUT PossessedCharacterIndex);
+		}
 		PossessCharacter();
 	}
 }
@@ -221,4 +234,11 @@ void AAnimalPlayerController::PossessCharacter()
 	{
 		Possess(CharacterToPossess);
 	}
+}
+
+AAnimalCharacter* AAnimalPlayerController::GetPlayableCharacterAtIndex(int32 Index)
+{
+	if (PlayableCharacters.Num() - 1 < Index) { return nullptr; }
+
+	return PlayableCharacters[Index];
 }

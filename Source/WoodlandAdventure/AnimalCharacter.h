@@ -41,7 +41,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Actions")
 	float SleepLength;
 
-	UPROPERTY(EditDefaultsOnly, Category = "HUD")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	class UTexture2D* Icon;
 
 protected:

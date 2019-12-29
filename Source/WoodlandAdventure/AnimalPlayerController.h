@@ -81,6 +81,9 @@ public:
 
 	UFUNCTION()
 	void CycleThroughCharacters(int32 Value);
+
+	UFUNCTION(BlueprintCallable)
+	AAnimalCharacter* GetPlayableCharacterAtIndex(int32 Index);
 	
 	void SwitchCharacter();
 
