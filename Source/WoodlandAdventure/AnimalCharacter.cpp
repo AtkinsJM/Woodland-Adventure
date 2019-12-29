@@ -48,6 +48,8 @@ AAnimalCharacter::AAnimalCharacter()
 
 	InteractableActor = nullptr;
 	PossessableCharacter = nullptr;
+
+	Icon = nullptr;
 }
 
 // Called when the game starts or when spawned

@@ -41,6 +41,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Actions")
 	float SleepLength;
 
+	UPROPERTY(EditDefaultsOnly, Category = "HUD")
+	class UTexture2D* Icon;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
