@@ -7,6 +7,8 @@
 #include "Engine/World.h"
 #include "Components/SphereComponent.h"
 #include "Interactable.h"
+#include "Tree.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AAnimalCharacter::AAnimalCharacter()
@@ -43,6 +45,7 @@ AAnimalCharacter::AAnimalCharacter()
 
 	bIsSleeping = false;
 	bCanMove = true;
+	bIsShakingTree = false;
 
 	SleepLength = 5.0f;
 
@@ -88,9 +91,33 @@ void AAnimalCharacter::EndSleep()
 void AAnimalCharacter::Interact()
 {
 	if (InteractableActor)
-	{
-		InteractableActor->Interact();
+	{		
+		if (AnimalType == EAnimalType::EAT_Stag && Cast<ATree>(InteractableActor))
+		{
+			StartShakingTree();
+		}
+		else
+		{
+			InteractableActor->Interact();
+		}
 	}
+}
+
+void AAnimalCharacter::StartShakingTree()
+{
+	if (!InteractableActor) { return; }
+	bCanMove = false;
+	bIsShakingTree = true;
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), InteractableActor->GetActorLocation());
+	FRotator WantedRotation = GetActorRotation();
+	WantedRotation.Yaw = LookAtRotation.Yaw;
+	SetActorRotation(WantedRotation);
+}
+
+void AAnimalCharacter::EndShakingTree()
+{
+	bIsShakingTree = false;
+	bCanMove = true;
 }
 
 void AAnimalCharacter::ZoomCamera(float Value)

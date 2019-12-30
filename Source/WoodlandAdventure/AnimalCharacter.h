@@ -69,9 +69,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CanMove() { return bCanMove; }
 
+	UFUNCTION(BlueprintCallable)
+	bool IsShakingTree() { return bIsShakingTree; }
+
 	void StartSleep();
 
 	void EndSleep();
+
+	void StartShakingTree();
+
+	UFUNCTION(BlueprintCallable)
+	void EndShakingTree();
 
 	void Interact();
 
@@ -93,6 +101,7 @@ public:
 private:
 	bool bIsSleeping;
 	bool bCanMove;
+	bool bIsShakingTree;
 	FTimerHandle SleepTimerHandle;
 
 	class AInteractable* InteractableActor;

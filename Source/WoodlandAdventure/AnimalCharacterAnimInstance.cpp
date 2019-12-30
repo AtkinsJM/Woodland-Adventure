@@ -34,5 +34,6 @@ void UAnimalCharacterAnimInstance::UpdateAnimationProperties()
 	if (AnimalCharacter)
 	{
 		bIsSleeping = AnimalCharacter->IsSleeping();
+		bIsShakingTree = AnimalCharacter->IsShakingTree();
 	}
 }

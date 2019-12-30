@@ -54,7 +54,14 @@ void AInteractable::Tick(float DeltaTime)
 
 void AInteractable::Interact()
 {
-	NumberOfInteractions--;
+	if (NumberOfInteractions != -1)
+	{
+		NumberOfInteractions--;
+		if (NumberOfInteractions <= 0)
+		{
+			bIsInteractable = false;
+		}
+	}	
 	if (InteractionSound && bPlaySoundOnInteraction)
 	{
 		UGameplayStatics::PlaySound2D(this, InteractionSound);
