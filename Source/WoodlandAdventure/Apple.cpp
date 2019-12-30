@@ -11,7 +11,7 @@ AApple::AApple()
 	PrimaryActorTick.bCanEverTick = true;
 
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-
+	StaticMesh->SetupAttachment(GetRootComponent());
 }
 
 

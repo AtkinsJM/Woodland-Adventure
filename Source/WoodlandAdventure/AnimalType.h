@@ -5,10 +5,6 @@
 #include "CoreMinimal.h"
 #include "AnimalType.generated.h"
 
-/**
- * 
- */
-
 UENUM(BlueprintType)
 enum class EAnimalType : uint8
 {
