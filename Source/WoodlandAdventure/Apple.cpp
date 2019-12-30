@@ -1,8 +1,9 @@
-t// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Apple.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SphereComponent.h"
 
 AApple::AApple()
 {
@@ -10,7 +11,6 @@ AApple::AApple()
 	PrimaryActorTick.bCanEverTick = true;
 
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	StaticMesh->SetupAttachment(GetRootComponent());
 
 }
 
@@ -27,13 +27,14 @@ void AApple::BeginPlay()
 void AApple::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	// TODO: sort this mess out!
+	InteractionSphere->SetWorldTransform(StaticMesh->GetComponentTransform());
 }
 
 void AApple::Interact()
 {
 	Super::Interact();
-
+	Destroy();
 }
 
 void AApple::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
@@ -45,3 +46,4 @@ void AApple::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, AActor * Ot
 {
 	Super::OnEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
 }
+

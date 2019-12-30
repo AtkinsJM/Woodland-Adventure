@@ -24,6 +24,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Interaction")
 	TSubclassOf<AActor> AppleAsset;
 
+	UPROPERTY(EditAnywhere, Category = "Interaction")
+	int32 MaxApplesToSpawn;
 
 protected:
 	// Called when the game starts or when spawned
@@ -34,6 +36,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void Interact() override;
+
+	FVector GetSpawnPoint();
+
+	void SpawnApple(FVector Location);
+
+	bool IsOccupied(FVector Location, float Radius);
 
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) override;
 

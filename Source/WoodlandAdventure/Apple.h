@@ -17,7 +17,7 @@ class WOODLANDADVENTURE_API AApple : public AInteractable
 public:
 	AApple();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	class UStaticMeshComponent* StaticMesh;
 
 protected:
@@ -35,5 +35,4 @@ public:
 	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 private:
-
 };
