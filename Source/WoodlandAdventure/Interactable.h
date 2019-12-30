@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "AnimalType.h"
 #include "Interactable.generated.h"
 
 UCLASS()
@@ -33,6 +34,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
 	bool bPlaySoundOnInteraction;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	TArray<EAnimalType> RequiredAnimalTypes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
+	bool bIsInteractable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
+	int32 NumberOfInteractions;
 
 protected:
 	// Called when the game starts or when spawned
@@ -50,4 +59,5 @@ public:
 	UFUNCTION()
 	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	bool IsRequiredAnimal(EAnimalType AnimalType);
 };

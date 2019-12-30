@@ -13,7 +13,7 @@ AAnimalCharacter::AAnimalCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	InteractionVolume = CreateDefaultSubobject<USphereComponent>(TEXT("Interaction Volume"));
 	InteractionVolume->SetupAttachment(GetRootComponent());
 
@@ -103,7 +103,7 @@ void AAnimalCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent,
 	if (OtherActor && OtherActor != this)
 	{
 		AInteractable* Interactable = Cast<AInteractable>(OtherActor);
-		if (Interactable && !InteractableActor)
+		if (Interactable && Interactable->IsRequiredAnimal(AnimalType) && Interactable->bIsInteractable && !InteractableActor)
 		{
 			InteractableActor = Interactable;
 			return;

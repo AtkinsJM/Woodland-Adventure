@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AnimalType.h"
 #include "AnimalCharacter.generated.h"
+
 
 UCLASS()
 class WOODLANDADVENTURE_API AAnimalCharacter : public ACharacter
@@ -14,6 +16,9 @@ class WOODLANDADVENTURE_API AAnimalCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AAnimalCharacter();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	EAnimalType AnimalType;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	class USphereComponent* InteractionVolume;

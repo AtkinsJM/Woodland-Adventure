@@ -6,6 +6,8 @@
 #include "Components/SphereComponent.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "AnimalCharacter.h"
+#include "AnimalType.h"
 
 // Sets default values
 AInteractable::AInteractable()
@@ -27,6 +29,11 @@ AInteractable::AInteractable()
 	bPlaySoundOnInteraction = true;
 
 	InteractionPrompt = "Interact";
+	
+	bIsInteractable = true;
+
+	NumberOfInteractions = -1;
+	
 }
 
 // Called when the game starts or when spawned
@@ -47,6 +54,7 @@ void AInteractable::Tick(float DeltaTime)
 
 void AInteractable::Interact()
 {
+	NumberOfInteractions--;
 	if (InteractionSound && bPlaySoundOnInteraction)
 	{
 		UGameplayStatics::PlaySound2D(this, InteractionSound);
@@ -59,5 +67,10 @@ void AInteractable::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AA
 
 void AInteractable::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
+}
+
+bool AInteractable::IsRequiredAnimal(EAnimalType AnimalType)
+{
+	return (RequiredAnimalTypes.Num() == 0 || RequiredAnimalTypes.Contains(AnimalType));
 }
 
