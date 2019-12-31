@@ -9,6 +9,9 @@
 #include "Interactable.h"
 #include "Tree.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Apple.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AAnimalCharacter::AAnimalCharacter()
@@ -46,13 +49,17 @@ AAnimalCharacter::AAnimalCharacter()
 	bIsSleeping = false;
 	bCanMove = true;
 	bIsShakingTree = false;
+	bIsEating = false;
 
 	SleepLength = 5.0f;
+	EatLength = 1.0f;
 
 	InteractableActor = nullptr;
 	PossessableCharacter = nullptr;
 
 	Icon = nullptr;
+
+	NumApplesEaten = 0;
 }
 
 // Called when the game starts or when spawned
@@ -80,7 +87,7 @@ void AAnimalCharacter::StartSleep()
 {
 	if (!bCanMove || bIsSleeping) { return; }
 	bIsSleeping = true;
-	GetWorld()->GetTimerManager().SetTimer(SleepTimerHandle, this, &AAnimalCharacter::EndSleep, SleepLength, true);
+	GetWorld()->GetTimerManager().SetTimer(SleepTimerHandle, this, &AAnimalCharacter::EndSleep, SleepLength, false);
 }
 
 void AAnimalCharacter::EndSleep()
@@ -92,9 +99,14 @@ void AAnimalCharacter::Interact()
 {
 	if (InteractableActor)
 	{		
+		// TODO refine this (use required animals list on interactable?
 		if (AnimalType == EAnimalType::EAT_Stag && Cast<ATree>(InteractableActor))
 		{
 			StartShakingTree();
+		}
+		else if (AnimalType == EAnimalType::EAT_Pig && Cast<AApple>(InteractableActor))
+		{
+			StartEating();
 		}
 		else
 		{
@@ -108,16 +120,47 @@ void AAnimalCharacter::StartShakingTree()
 	if (!InteractableActor) { return; }
 	bCanMove = false;
 	bIsShakingTree = true;
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), InteractableActor->GetActorLocation());
-	FRotator WantedRotation = GetActorRotation();
-	WantedRotation.Yaw = LookAtRotation.Yaw;
-	SetActorRotation(WantedRotation);
+	LookAt(InteractableActor);
 }
 
 void AAnimalCharacter::EndShakingTree()
 {
 	bIsShakingTree = false;
 	bCanMove = true;
+}
+
+void AAnimalCharacter::StartEating()
+{
+	if (!InteractableActor) { return; }
+
+
+	bCanMove = false;
+	bIsEating = true;
+
+	LookAt(InteractableActor);
+	   
+	if (PigEatSound)
+	{
+		UGameplayStatics::PlaySound2D(this, PigEatSound);
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(EatTimerHandle, this, &AAnimalCharacter::EndEating, EatLength, false);
+}
+
+void AAnimalCharacter::EndEating()
+{
+	bIsEating = false;
+	bCanMove = true;
+	NumApplesEaten++;
+	InteractableActor = nullptr;
+}
+
+void AAnimalCharacter::LookAt(AActor* OtherActor)
+{
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), OtherActor->GetActorLocation());
+	FRotator WantedRotation = GetActorRotation();
+	WantedRotation.Yaw = LookAtRotation.Yaw;
+	SetActorRotation(WantedRotation);
 }
 
 void AAnimalCharacter::ZoomCamera(float Value)
@@ -127,6 +170,8 @@ void AAnimalCharacter::ZoomCamera(float Value)
 
 void AAnimalCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
+	// TODO: find a better method of avoiding interactable changing whilst interacting with it
+	if (bIsEating || bIsSleeping || bIsShakingTree) { return; }
 	if (OtherActor && OtherActor != this)
 	{
 		AInteractable* Interactable = Cast<AInteractable>(OtherActor);
@@ -146,6 +191,7 @@ void AAnimalCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent,
 
 void AAnimalCharacter::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
+	if (bIsEating || bIsSleeping || bIsShakingTree) { return; }
 	if (OtherActor && OtherActor != this)
 	{
 		AInteractable* Interactable = Cast<AInteractable>(OtherActor);

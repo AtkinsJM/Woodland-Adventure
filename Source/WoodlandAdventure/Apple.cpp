@@ -4,6 +4,8 @@
 #include "Apple.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 AApple::AApple()
 {
@@ -12,6 +14,7 @@ AApple::AApple()
 
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	StaticMesh->SetupAttachment(GetRootComponent());
+	StaticMesh->OnComponentHit.AddDynamic(this, &AApple::OnHit);
 }
 
 
@@ -20,7 +23,6 @@ void AApple::BeginPlay()
 {
 	Super::BeginPlay();
 
-
 }
 
 // Called every frame
@@ -28,7 +30,7 @@ void AApple::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	// TODO: sort this mess out!
-	InteractionSphere->SetWorldTransform(StaticMesh->GetComponentTransform());
+	Root->SetWorldTransform(StaticMesh->GetComponentTransform());
 }
 
 void AApple::Interact()
@@ -40,6 +42,7 @@ void AApple::Interact()
 void AApple::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+	
 }
 
 void AApple::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
@@ -47,3 +50,10 @@ void AApple::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, AActor * Ot
 	Super::OnEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
 }
 
+void AApple::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (DropSound)
+	{
+		UGameplayStatics::PlaySound2D(this, DropSound);
+	}
+}

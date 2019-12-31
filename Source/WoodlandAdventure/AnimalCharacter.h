@@ -46,8 +46,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Actions")
 	float SleepLength;
 
+	UPROPERTY(EditAnywhere, Category = "Actions")
+	float EatLength;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	class UTexture2D* Icon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+	class USoundCue* PigEatSound;
 
 protected:
 	// Called when the game starts or when spawned
@@ -72,6 +78,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsShakingTree() { return bIsShakingTree; }
 
+	UFUNCTION(BlueprintCallable)
+	bool IsEating() { return bIsEating; }
+
 	void StartSleep();
 
 	void EndSleep();
@@ -81,9 +90,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EndShakingTree();
 
+	void StartEating();
+
+	UFUNCTION(BlueprintCallable)
+	void EndEating();
+
 	void Interact();
 
 	void ZoomCamera(float Value);
+
+	void LookAt(AActor* OtherActor);
 
 	FORCEINLINE void SetInteractableActor(class AInteractable* Actor) { InteractableActor = Actor; }
 
@@ -92,6 +108,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE AAnimalCharacter* GetPossessableCharacter() { return PossessableCharacter; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE int32 GetNumApplesEaten() { return NumApplesEaten; }
 
 	UFUNCTION()
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
@@ -102,9 +121,13 @@ private:
 	bool bIsSleeping;
 	bool bCanMove;
 	bool bIsShakingTree;
+	bool bIsEating;
 	FTimerHandle SleepTimerHandle;
+	FTimerHandle EatTimerHandle;
 
 	class AInteractable* InteractableActor;
 
 	class AAnimalCharacter* PossessableCharacter;
+
+	int32 NumApplesEaten;
 };

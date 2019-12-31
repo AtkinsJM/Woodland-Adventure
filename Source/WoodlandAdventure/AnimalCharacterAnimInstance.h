@@ -35,6 +35,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
 	bool bIsShakingTree;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actions")
+	bool bIsEating;
+
 protected:
 	virtual void NativeInitializeAnimation() override;
 
