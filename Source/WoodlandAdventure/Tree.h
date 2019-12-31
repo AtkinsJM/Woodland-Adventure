@@ -18,7 +18,7 @@ public:
 	// Sets default values for this actor's properties
 	ATree();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	class UBoxComponent* CanopyVolume;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Interaction")

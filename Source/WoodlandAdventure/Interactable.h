@@ -19,7 +19,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	class USceneComponent* Root;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	class USphereComponent* InteractionSphere;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
