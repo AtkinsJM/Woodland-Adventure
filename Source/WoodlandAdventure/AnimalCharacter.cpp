@@ -99,6 +99,7 @@ void AAnimalCharacter::Interact()
 {
 	if (InteractableActor)
 	{		
+		InteractableActor->ToggleHighlight(false);
 		// TODO refine this (use required animals list on interactable?
 		if (AnimalType == EAnimalType::EAT_Stag && Cast<ATree>(InteractableActor))
 		{
@@ -178,6 +179,7 @@ void AAnimalCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent,
 		if (Interactable && Interactable->IsRequiredAnimal(AnimalType) && Interactable->bIsInteractable && !InteractableActor)
 		{
 			InteractableActor = Interactable;
+			InteractableActor->ToggleHighlight(true);
 			return;
 		}
 		AAnimalCharacter* Possessable = Cast<AAnimalCharacter>(OtherActor);
@@ -197,6 +199,7 @@ void AAnimalCharacter::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, A
 		AInteractable* Interactable = Cast<AInteractable>(OtherActor);
 		if (Interactable && Interactable == InteractableActor)
 		{
+			InteractableActor->ToggleHighlight(false);
 			InteractableActor = nullptr;
 			return;
 		}

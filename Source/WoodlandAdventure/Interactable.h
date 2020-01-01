@@ -42,6 +42,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
 	int32 NumberOfInteractions;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+	TArray<class UStaticMeshComponent*> MeshesToHighlight;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -60,4 +64,6 @@ public:
 	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	bool IsRequiredAnimal(EAnimalType AnimalType);
+
+	void ToggleHighlight(bool Value);
 };

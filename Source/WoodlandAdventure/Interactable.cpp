@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "AnimalCharacter.h"
 #include "AnimalType.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AInteractable::AInteractable()
@@ -43,6 +44,7 @@ void AInteractable::BeginPlay()
 
 	InteractionSphere->SetSphereRadius(InteractionRadius);
 	
+	GetComponents<UStaticMeshComponent>(MeshesToHighlight, true);
 }
 
 // Called every frame
@@ -81,3 +83,11 @@ bool AInteractable::IsRequiredAnimal(EAnimalType AnimalType)
 	return (RequiredAnimalTypes.Num() == 0 || RequiredAnimalTypes.Contains(AnimalType));
 }
 
+void AInteractable::ToggleHighlight(bool Value)
+{
+	if (MeshesToHighlight.Num() == 0) { return; }
+	for (UStaticMeshComponent* Mesh : MeshesToHighlight)
+	{
+		Mesh->SetRenderCustomDepth(Value);
+	}
+}
