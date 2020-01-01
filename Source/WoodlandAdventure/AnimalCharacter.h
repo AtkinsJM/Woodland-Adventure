@@ -66,6 +66,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void PossessedBy(AController* NewController) override;
+
+	virtual void UnPossessed() override;
+
 	UFUNCTION(BlueprintCallable)
 	bool IsSleeping() { return bIsSleeping; }
 
@@ -113,7 +117,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE int32 GetNumApplesEaten() { return NumApplesEaten; }
-
+	
 	UFUNCTION()
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	UFUNCTION()
@@ -124,6 +128,7 @@ private:
 	bool bCanMove;
 	bool bIsShakingTree;
 	bool bIsEating;
+	bool bIsPlayerPossessed;
 	FTimerHandle SleepTimerHandle;
 	FTimerHandle EatTimerHandle;
 
