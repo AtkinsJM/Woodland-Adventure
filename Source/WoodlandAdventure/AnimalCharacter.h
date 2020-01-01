@@ -101,6 +101,8 @@ public:
 
 	void LookAt(AActor* OtherActor);
 
+	void ToggleHighlight(bool Value);
+
 	FORCEINLINE void SetInteractableActor(class AInteractable* Actor) { InteractableActor = Actor; }
 
 	UFUNCTION(BlueprintCallable)
@@ -130,4 +132,6 @@ private:
 	class AAnimalCharacter* PossessableCharacter;
 
 	int32 NumApplesEaten;
+
+	class USkeletalMeshComponent* SkeletalMesh;
 };

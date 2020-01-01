@@ -12,6 +12,7 @@
 #include "Apple.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
 AAnimalCharacter::AAnimalCharacter()
@@ -60,6 +61,12 @@ AAnimalCharacter::AAnimalCharacter()
 	Icon = nullptr;
 
 	NumApplesEaten = 0;
+
+	SkeletalMesh = FindComponentByClass<USkeletalMeshComponent>();
+	if (SkeletalMesh)
+	{
+		SkeletalMesh->SetCustomDepthStencilValue(1);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -186,6 +193,7 @@ void AAnimalCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent,
 		if (Possessable && !PossessableCharacter)
 		{
 			PossessableCharacter = Possessable;
+			PossessableCharacter->ToggleHighlight(true);
 			return;
 		}
 	}
@@ -206,9 +214,16 @@ void AAnimalCharacter::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, A
 		AAnimalCharacter* Possessable = Cast<AAnimalCharacter>(OtherActor);
 		if (Possessable && Possessable == PossessableCharacter)
 		{
+			PossessableCharacter->ToggleHighlight(false);
 			PossessableCharacter = nullptr;
 			return;
 		}
 	}
+}
+
+void AAnimalCharacter::ToggleHighlight(bool Value)
+{
+	if (!SkeletalMesh) { return; }
+	SkeletalMesh->SetRenderCustomDepth(Value);
 }
 

@@ -232,6 +232,7 @@ void AAnimalPlayerController::PossessCharacter()
 	AAnimalCharacter* CharacterToPossess = PlayableCharacters[PossessedCharacterIndex];
 	if (CharacterToPossess && CharacterToPossess != AnimalCharacter)
 	{
+		CharacterToPossess->ToggleHighlight(false);
 		Possess(CharacterToPossess);
 	}
 }
