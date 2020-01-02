@@ -6,6 +6,7 @@
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
+#include "Engine/World.h"
 
 ARaceManager::ARaceManager()
 {
@@ -78,19 +79,27 @@ void ARaceManager::StartRace()
 void ARaceManager::EndRace()
 {
 	bIsRaceActive = false;
+	if (AudioComponent)
+	{
+		AudioComponent->Stop();
+	}
 	if (TimeRemaining > 0.0f)
 	{
 		//WIN!
 		UE_LOG(LogTemp, Warning, TEXT("You won the race!"));
+		if (WinSound)
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), WinSound);
+		}
 	}
 	else
 	{
 		//LOSE!
 		UE_LOG(LogTemp, Warning, TEXT("You lost the race!"));
-	}
-	if (AudioComponent)
-	{
-		AudioComponent->Stop();
+		if (LoseSound)
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), LoseSound);
+		}
 	}
 }
 
