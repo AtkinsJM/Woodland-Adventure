@@ -3,14 +3,23 @@
 
 #include "RaceManager.h"
 #include "Checkpoint.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 
 ARaceManager::ARaceManager()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	AudioComponent->SetupAttachment(GetRootComponent());
+
 	NextCheckpointIndex = 0;
 	bIsRaceActive = false;
+
+	StartTime = 10.0f;
+	CheckpointBonusTime = 10.0f;
 }
 
 void ARaceManager::BeginPlay()
@@ -26,11 +35,14 @@ void ARaceManager::BeginPlay()
 void ARaceManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UE_LOG(LogTemp, Warning, TEXT("Ticking"));
 	if (bIsRaceActive)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Time remaining reduced"));
 		TimeRemaining -= DeltaTime;
+		if (TimeRemaining < 0.0f) 
+		{ 
+			TimeRemaining = 0.0f; 
+			EndRace();
+		}
 	}
 }
 
@@ -52,18 +64,34 @@ void ARaceManager::Interact()
 
 void ARaceManager::StartRace()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Race started"));
-	TimeRemaining = 10.0f;
 	bIsRaceActive = true;
+	TimeRemaining = StartTime;
 	NextCheckpointIndex = 0;
 	SetupNextCheckpoint();
-
+	if (AudioComponent && TimerSound)
+	{
+		AudioComponent->SetSound(TimerSound);
+		AudioComponent->Play();
+	}
 }
 
 void ARaceManager::EndRace()
 {
 	bIsRaceActive = false;
-	UE_LOG(LogTemp, Warning, TEXT("Race finished"));
+	if (TimeRemaining > 0.0f)
+	{
+		//WIN!
+		UE_LOG(LogTemp, Warning, TEXT("You won the race!"));
+	}
+	else
+	{
+		//LOSE!
+		UE_LOG(LogTemp, Warning, TEXT("You lost the race!"));
+	}
+	if (AudioComponent)
+	{
+		AudioComponent->Stop();
+	}
 }
 
 void ARaceManager::SetupNextCheckpoint()
@@ -77,11 +105,10 @@ void ARaceManager::SetupNextCheckpoint()
 
 void ARaceManager::PassCurrentCheckpoint()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Passed checkpoint %i"), NextCheckpointIndex);
 	NextCheckpointIndex++;
 	if (NextCheckpointIndex < Checkpoints.Num())
 	{
-		TimeRemaining += 10.0f;
+		TimeRemaining += CheckpointBonusTime;
 		SetupNextCheckpoint();
 	}
 	else

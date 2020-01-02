@@ -21,6 +21,18 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Checkpoints")
 	TArray<class ACheckpoint*> Checkpoints;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Checkpoints")
+	float StartTime;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Checkpoints")
+	float CheckpointBonusTime;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+	class USoundCue* TimerSound;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+	class UAudioComponent* AudioComponent;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
