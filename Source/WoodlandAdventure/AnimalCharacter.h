@@ -128,7 +128,6 @@ private:
 	bool bCanMove;
 	bool bIsShakingTree;
 	bool bIsEating;
-	bool bIsPlayerPossessed;
 	FTimerHandle SleepTimerHandle;
 	FTimerHandle EatTimerHandle;
 

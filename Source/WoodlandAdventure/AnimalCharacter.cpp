@@ -58,9 +58,7 @@ AAnimalCharacter::AAnimalCharacter()
 
 	InteractableActor = nullptr;
 	PossessableCharacter = nullptr;
-
-	bIsPlayerPossessed = false;
-
+	
 	Icon = nullptr;
 
 	NumApplesEaten = 0;
@@ -95,16 +93,22 @@ void AAnimalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AAnimalCharacter::PossessedBy(AController * NewController)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s is possessed"), *GetName());
 	if (Cast<AAnimalPlayerController>(NewController))
 	{
-		bIsPlayerPossessed = true;
+		InteractionVolume->Activate();
+		InteractionVolume->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+	else
+	{
+		InteractionVolume->Deactivate();
+		InteractionVolume->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
 void AAnimalCharacter::UnPossessed()
 {
-	bIsPlayerPossessed = false;
+	InteractionVolume->Deactivate();
+	InteractionVolume->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	InteractableActor = nullptr;
 	PossessableCharacter = nullptr;
 }
@@ -198,9 +202,7 @@ void AAnimalCharacter::ZoomCamera(float Value)
 void AAnimalCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s overlap event"), *GetName());
-	UE_LOG(LogTemp, Warning, TEXT("Is possessed?: %s"), bIsPlayerPossessed ? TEXT("True") : TEXT("false"));
-	// Ignore if not possessed pawn
-	if (!bIsPlayerPossessed) { return; }
+	UE_LOG(LogTemp, Warning, TEXT("Interaction volume active state: %s"), InteractionVolume->IsActive() ? TEXT("True") : TEXT("False"));
 	// TODO: find a better method of avoiding interactable changing whilst interacting with it
 	if (bIsEating || bIsSleeping || bIsShakingTree) { return; }
 	if (OtherActor && OtherActor != this)
