@@ -119,6 +119,10 @@ void ARaceManager::PassCurrentCheckpoint()
 	{
 		TimeRemaining += CheckpointBonusTime;
 		SetupNextCheckpoint();
+		if (PassCheckpointSound)
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), PassCheckpointSound);
+		}
 	}
 	else
 	{

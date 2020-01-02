@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
 	USoundCue* LoseSound;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+	USoundCue* PassCheckpointSound;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
 	class UAudioComponent* AudioComponent;
 
