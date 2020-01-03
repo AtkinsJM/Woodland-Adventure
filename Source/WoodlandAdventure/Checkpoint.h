@@ -24,6 +24,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	class UBoxComponent* InteractionVolume;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
+	class UWidgetComponent* Marker;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

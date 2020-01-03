@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "AnimalCharacter.h"
 #include "RaceManager.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 ACheckpoint::ACheckpoint()
@@ -30,6 +31,12 @@ ACheckpoint::ACheckpoint()
 	InteractionVolume->OnComponentBeginOverlap.AddDynamic(this, &ACheckpoint::OnBeginOverlap);
 	InteractionVolume->OnComponentEndOverlap.AddDynamic(this, &ACheckpoint::OnEndOverlap);
 
+	Marker = CreateDefaultSubobject<UWidgetComponent>(TEXT("Marker"));
+	Marker->SetupAttachment(GetRootComponent());
+	Marker->SetWidgetSpace(EWidgetSpace::World);
+	Marker->SetDrawSize(FVector2D(30.0f, 30.0f));
+	Marker->SetVisibility(false);
+
 	bIsNextCheckpoint = false;
 	bIsPassed = false;
 
@@ -48,6 +55,13 @@ void ACheckpoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (Marker)
+	{
+		FRotator WantedRotation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraRotation();
+		WantedRotation.Pitch *= -1;
+		WantedRotation.Yaw += 180;
+		Marker->SetWorldRotation(WantedRotation);
+	}
 }
 
 void ACheckpoint::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
@@ -55,7 +69,7 @@ void ACheckpoint::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent, AAct
 	if (OtherActor)
 	{
 		//TODO check character is correct (use required character enum or just hard-code pig?)
-		if (Cast<AAnimalCharacter>(OtherActor) && bIsNextCheckpoint && !bIsPassed)
+		if (Cast<AAnimalCharacter>(OtherActor) && bIsNextCheckpoint && !bIsPassed && RaceManager && RaceManager->IsRaceActive())
 		{
 			PassCheckpoint();
 		}
@@ -71,6 +85,10 @@ void ACheckpoint::PassCheckpoint()
 {
 	bIsPassed = true;
 	bIsNextCheckpoint = false;
+	if (Marker)
+	{
+		Marker->SetVisibility(false);
+	}
 	if (RaceManager)
 	{
 		RaceManager->PassCurrentCheckpoint();
@@ -81,4 +99,8 @@ void ACheckpoint::SetupCheckpoint()
 {
 	bIsNextCheckpoint = true;
 	bIsPassed = false;
+	if (Marker)
+	{
+		Marker->SetVisibility(true);
+	}
 }
