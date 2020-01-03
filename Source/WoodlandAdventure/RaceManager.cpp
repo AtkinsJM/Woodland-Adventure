@@ -21,6 +21,9 @@ ARaceManager::ARaceManager()
 
 	StartTime = 10.0f;
 	CheckpointBonusTime = 10.0f;
+
+	NumberOfLaps = 1;
+	CurrentLap = 1;
 }
 
 void ARaceManager::BeginPlay()
@@ -68,6 +71,7 @@ void ARaceManager::StartRace()
 	bIsRaceActive = true;
 	TimeRemaining = StartTime;
 	NextCheckpointIndex = 0;
+	CurrentLap = 1;
 	SetupNextCheckpoint();
 	if (AudioComponent && TimerSound)
 	{
@@ -114,18 +118,29 @@ void ARaceManager::SetupNextCheckpoint()
 
 void ARaceManager::PassCurrentCheckpoint()
 {
+	// Increment checkpoint number
 	NextCheckpointIndex++;
-	if (NextCheckpointIndex < Checkpoints.Num())
+	// If exceeded number of checkpoints
+	if (NextCheckpointIndex == Checkpoints.Num())
 	{
-		TimeRemaining += CheckpointBonusTime;
-		SetupNextCheckpoint();
-		if (PassCheckpointSound)
+		// If final lap, end game; else increment lap number and reset checkpoint number
+		if (CurrentLap == NumberOfLaps)
 		{
-			UGameplayStatics::PlaySound2D(GetWorld(), PassCheckpointSound);
+			EndRace();
+			return;
+		}
+		else
+		{
+			NextCheckpointIndex = 0;
+			CurrentLap++;
 		}
 	}
-	else
+	
+	TimeRemaining += CheckpointBonusTime;
+	SetupNextCheckpoint();
+	if (PassCheckpointSound)
 	{
-		EndRace();
+		UGameplayStatics::PlaySound2D(GetWorld(), PassCheckpointSound);
 	}
+	
 }

@@ -18,13 +18,16 @@ public:
 	// Sets default values for this actor's properties
 	ARaceManager();
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Checkpoints")
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Race")
 	TArray<class ACheckpoint*> Checkpoints;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Checkpoints")
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Race")
+	int32 NumberOfLaps;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Race")
 	float StartTime;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Checkpoints")
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Race")
 	float CheckpointBonusTime;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
@@ -76,4 +79,6 @@ private:
 	bool bIsRaceActive;
 
 	float TimeRemaining;
+
+	int32 CurrentLap;
 };
