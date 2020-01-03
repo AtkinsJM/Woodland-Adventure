@@ -69,6 +69,15 @@ public:
 	void PassCurrentCheckpoint();
 
 	UFUNCTION(BlueprintCallable)
+	FORCEINLINE int32 GetCurrentLap() { return CurrentLap; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE int32 GetCheckpointsPassed() { return NextCheckpointIndex; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE int32 GetNumberOfCheckpoints() { return Checkpoints.Num(); }
+
+	UFUNCTION(BlueprintCallable)
 	bool IsRaceActive() { return bIsRaceActive; }
 
 	UFUNCTION(BlueprintCallable)
