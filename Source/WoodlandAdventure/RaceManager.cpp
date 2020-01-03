@@ -32,6 +32,7 @@ void ARaceManager::BeginPlay()
 	for (ACheckpoint* Checkpoint : Checkpoints)
 	{
 		Checkpoint->SetRaceManager(this);
+		Checkpoint->SetActorHiddenInGame(true);
 	}
 
 }
@@ -68,6 +69,10 @@ void ARaceManager::Interact()
 
 void ARaceManager::StartRace()
 {
+	for (ACheckpoint* Checkpoint : Checkpoints)
+	{
+		Checkpoint->SetActorHiddenInGame(false);
+	}
 	bIsRaceActive = true;
 	TimeRemaining = StartTime;
 	NextCheckpointIndex = 0;
@@ -82,6 +87,10 @@ void ARaceManager::StartRace()
 
 void ARaceManager::EndRace()
 {
+	for (ACheckpoint* Checkpoint : Checkpoints)
+	{
+		Checkpoint->SetActorHiddenInGame(true);
+	}
 	bIsRaceActive = false;
 	if (AudioComponent)
 	{
