@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
 #include "Engine/World.h"
+#include "AnimalCharacter.h"
 
 ARaceManager::ARaceManager()
 {
@@ -18,12 +19,15 @@ ARaceManager::ARaceManager()
 
 	NextCheckpointIndex = 0;
 	bIsRaceActive = false;
+	bIsTimerActive = false;
 
 	StartTime = 10.0f;
 	CheckpointBonusTime = 10.0f;
 
 	NumberOfLaps = 1;
 	CurrentLap = 1;
+
+	RacingCharacter = nullptr;
 }
 
 void ARaceManager::BeginPlay()
@@ -40,7 +44,7 @@ void ARaceManager::BeginPlay()
 void ARaceManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (bIsRaceActive)
+	if (bIsRaceActive && bIsTimerActive)
 	{
 		TimeRemaining -= DeltaTime;
 		if (TimeRemaining < 0.0f) 
@@ -61,13 +65,14 @@ void ARaceManager::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, AActo
 	Super::OnEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
 }
 
-void ARaceManager::Interact()
+void ARaceManager::Interact(class AAnimalCharacter* InteractingCharacter)
 {
-	Super::Interact();
-	StartRace();
+	Super::Interact(InteractingCharacter);
+	RacingCharacter = InteractingCharacter;
+	StartCountdown();
 }
 
-void ARaceManager::StartRace()
+void ARaceManager::StartCountdown()
 {
 	for (ACheckpoint* Checkpoint : Checkpoints)
 	{
@@ -78,6 +83,30 @@ void ARaceManager::StartRace()
 	NextCheckpointIndex = 0;
 	CurrentLap = 1;
 	SetupNextCheckpoint();
+		
+	if (RacingCharacter)
+	{
+		//TODO: make character face correct direction (same rotation as startpoint? towards next checkpoint?)
+		RacingCharacter->SetCanMove(false);
+	}
+
+	if (CountdownSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), CountdownSound);
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ARaceManager::StartRace, 3.0f, false);
+}
+
+void ARaceManager::StartRace()
+{
+	bIsTimerActive = true;
+	
+	if (RacingCharacter)
+	{
+		RacingCharacter->SetCanMove(true);
+	}
+
 	if (AudioComponent && TimerSound)
 	{
 		AudioComponent->SetSound(TimerSound);
@@ -88,6 +117,7 @@ void ARaceManager::StartRace()
 void ARaceManager::EndRace()
 {
 	bIsRaceActive = false;
+	bIsTimerActive = false;
 	for (ACheckpoint* Checkpoint : Checkpoints)
 	{
 		Checkpoint->SetActorHiddenInGame(true);
@@ -110,6 +140,7 @@ void ARaceManager::EndRace()
 			UGameplayStatics::PlaySound2D(GetWorld(), LoseSound);
 		}
 	}
+	RacingCharacter = nullptr;
 }
 
 void ARaceManager::SetupNextCheckpoint()

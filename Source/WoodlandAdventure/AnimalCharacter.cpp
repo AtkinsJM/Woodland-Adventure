@@ -142,7 +142,7 @@ void AAnimalCharacter::Interact()
 		}
 		else
 		{
-			InteractableActor->Interact();
+			InteractableActor->Interact(this);
 		}
 	}
 }

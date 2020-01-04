@@ -3,6 +3,7 @@
 #include "Tree.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "AnimalCharacter.h"
 
 // Fill out your copyright notice in the Description page of Project Settings.
 
@@ -32,9 +33,9 @@ void ATree::Tick(float DeltaTime)
 
 }
 
-void ATree::Interact()
+void ATree::Interact(class AAnimalCharacter* InteractingCharacter)
 {
-	Super::Interact();
+	Super::Interact(InteractingCharacter);
 
 	if (AppleAsset)
 	{

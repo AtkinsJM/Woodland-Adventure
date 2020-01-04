@@ -3,6 +3,7 @@
 
 #include "Gate.h"
 #include "Components/StaticMeshComponent.h"
+#include "AnimalCharacter.h"
 
 // Sets default values
 AGate::AGate()
@@ -47,9 +48,9 @@ void AGate::HandleRotation(float DeltaTime)
 	}
 }
 
-void AGate::Interact()
+void AGate::Interact(class AAnimalCharacter* InteractingCharacter)
 {
-	Super::Interact();
+	Super::Interact(InteractingCharacter);
 	bIsClosed = !bIsClosed;
 	InteractionPrompt = bIsClosed ? "Open" : "Close";
 }

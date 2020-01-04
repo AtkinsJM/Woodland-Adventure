@@ -31,6 +31,9 @@ public:
 	float CheckpointBonusTime;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+	class USoundCue* CountdownSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
 	class USoundCue* TimerSound;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
@@ -58,7 +61,9 @@ public:
 
 	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 	
-	virtual void Interact() override;
+	virtual void Interact(class AAnimalCharacter* InteractingCharacter) override;
+
+	void StartCountdown();
 
 	void StartRace();
 
@@ -86,8 +91,13 @@ public:
 private:
 	int32 NextCheckpointIndex;
 	bool bIsRaceActive;
+	bool bIsTimerActive;
 
 	float TimeRemaining;
 
 	int32 CurrentLap;
+
+	FTimerHandle CountdownTimerHandle;
+
+	AAnimalCharacter* RacingCharacter;
 };

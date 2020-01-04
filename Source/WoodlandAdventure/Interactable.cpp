@@ -9,6 +9,7 @@
 #include "AnimalCharacter.h"
 #include "AnimalType.h"
 #include "Components/StaticMeshComponent.h"
+#include "AnimalCharacter.h"
 
 // Sets default values
 AInteractable::AInteractable()
@@ -54,7 +55,7 @@ void AInteractable::Tick(float DeltaTime)
 
 }
 
-void AInteractable::Interact()
+void AInteractable::Interact(AAnimalCharacter* InteractingCharacter)
 {
 	if (NumberOfInteractions != -1)
 	{

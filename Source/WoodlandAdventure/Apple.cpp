@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "AnimalCharacter.h"
 
 AApple::AApple()
 {
@@ -33,9 +34,9 @@ void AApple::Tick(float DeltaTime)
 	Root->SetWorldTransform(StaticMesh->GetComponentTransform());
 }
 
-void AApple::Interact()
+void AApple::Interact(AAnimalCharacter* InteractingCharacter)
 {
-	Super::Interact();
+	Super::Interact(InteractingCharacter);
 	Destroy();
 }
 
